@@ -1,4 +1,4 @@
-import NavTabs from "./navtabs";
+import NavTabs from "./NavTabs";
 
 export default function MainLayout({ children }) {
   return (

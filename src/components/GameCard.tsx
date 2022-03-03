@@ -8,9 +8,9 @@ import {
   CardContent,
   CardMedia,
   Typography,
-} from "../mui";
+} from "../../mui";
 
-export default function PostCard(postId, title, desc, url) {
+export default function GameCard(postId, name, url) {
   return (
     <>
       <Card
@@ -18,20 +18,17 @@ export default function PostCard(postId, title, desc, url) {
           maxWidth: 345,
         }}
       >
-        <Link href={`/post/[id]`} as={`/post/${postId}`} passHref>
+        <Link href={`/game/[id]`} as={`/game/${postId}`} passHref>
           <CardActionArea>
             <CardMedia
               component="img"
-              height="140"
+              height="auto"
               image={url}
               alt="green iguana"
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
-                {title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {desc}
+                {name}
               </Typography>
             </CardContent>
           </CardActionArea>
