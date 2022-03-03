@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IGame, IGameInfo } from "./game.types";
+import { AppDispatch } from "../store";
+import { gameSlice } from "./game.slice";
 
 export const gameApi = createApi({
   reducerPath: "api/games",
@@ -20,13 +22,26 @@ export const gameApi = createApi({
     credentials: "include",
   }),
   endpoints: (build) => ({
-    getGames: build.query<IGame[], void>({
-      query: () => ({
+    getGames: build.query<IGame[], number>({
+      query: (limit) => ({
         url: `games`,
         method: "POST",
-        body: "fields name, cover.url, first_release_date, total_rating, total_rating_count; limit 20; where cover != null & total_rating != null;",
+        body: `fields name, cover.url, first_release_date, total_rating, total_rating_count; limit 9; offset ${limit}; where cover != null & total_rating != null;`,
         mode: "cors",
       }),
+      async onQueryStarted(limit, { dispatch, queryFulfilled }) {
+        dispatch(gameSlice.actions.addGames());
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(gameSlice.actions.addGamesSuccess(data));
+        } catch (err) {
+          dispatch(
+            gameSlice.actions.addGamesError(
+              "An error occurred while uploading data"
+            )
+          );
+        }
+      },
     }),
     getGameInfo: build.query<IGameInfo, void>({
       query: () => ({
