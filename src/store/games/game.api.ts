@@ -1,7 +1,13 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  createApi,
+  fetchBaseQuery,
+  FetchBaseQueryMeta,
+} from "@reduxjs/toolkit/query/react";
 import { IGame, IGameInfo } from "./game.types";
 import { AppDispatch } from "../store";
 import { gameSlice } from "./game.slice";
+import App from "next/app";
+import { PromiseWithKnownReason } from "@reduxjs/toolkit/dist/query/core/buildMiddleware/types";
 
 export const gameApi = createApi({
   reducerPath: "api/games",

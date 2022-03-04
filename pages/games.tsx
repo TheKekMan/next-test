@@ -26,7 +26,6 @@ export default function Games() {
     }
   }, [inView]);
   useGetGamesQuery(limit);
-  console.log(inView);
   return (
     <MainLayout>
       <Head>
@@ -34,7 +33,9 @@ export default function Games() {
       </Head>
 
       {error ? (
-        <Typography variant={"h2"}>Error</Typography>
+        <Typography variant={"h4"} align={"center"}>
+          {error}
+        </Typography>
       ) : (
         <Box
           sx={{
