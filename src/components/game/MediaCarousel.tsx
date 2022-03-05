@@ -26,7 +26,7 @@ const MediaCarousel = ({ screenshots, videos }) => {
   items.push(
     ...screenshots.map((item: IScreenshot) => ({
       original: item.url.replace("thumb", "1080p"),
-      thumbnail: item.url.replace("thumb", "720p"),
+      thumbnail: item.url.replace("thumb", "screenshot_med"),
     }))
   );
   return (
