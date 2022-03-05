@@ -1,13 +1,7 @@
-import {
-  createApi,
-  fetchBaseQuery,
-  FetchBaseQueryMeta,
-} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IGame, IGameInfo } from "./game.types";
-import { AppDispatch } from "../store";
 import { gameSlice } from "./game.slice";
-import App from "next/app";
-import { PromiseWithKnownReason } from "@reduxjs/toolkit/dist/query/core/buildMiddleware/types";
+import { HYDRATE } from "next-redux-wrapper";
 
 export const gameApi = createApi({
   reducerPath: "api/games",
@@ -27,12 +21,17 @@ export const gameApi = createApi({
     mode: "cors",
     credentials: "include",
   }),
+  extractRehydrationInfo(action, { reducerPath }) {
+    if (action.type === HYDRATE) {
+      return action.payload[reducerPath];
+    }
+  },
   endpoints: (build) => ({
     getGames: build.query<IGame[], number>({
       query: (limit) => ({
         url: `games`,
         method: "POST",
-        body: `fields name, cover.url, first_release_date, total_rating, total_rating_count; limit 9; offset ${limit}; where cover != null & total_rating != null;`,
+        body: `fields name, cover.url, first_release_date, total_rating, total_rating_count, genres, videos.video_id; limit 9; offset ${limit}; where cover != null & total_rating != null & genres != null & videos != null;`,
         mode: "cors",
       }),
       async onQueryStarted(limit, { dispatch, queryFulfilled }) {
@@ -49,11 +48,11 @@ export const gameApi = createApi({
         }
       },
     }),
-    getGameInfo: build.query<IGameInfo, void>({
-      query: () => ({
+    getGameInfo: build.query<IGameInfo, number>({
+      query: (gameId) => ({
         url: `games`,
         method: "POST",
-        body: "fields name, cover.url, first_release_date, genres.name, screenshots.url, summary; limit 20; where cover != null & total_rating != null;",
+        body: `fields name, cover.url, first_release_date, genres.name, screenshots.url, summary, videos.video_id; where id=${gameId};`,
         mode: "cors",
       }),
     }),
