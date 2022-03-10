@@ -14,18 +14,24 @@ const GridItem = styled(Paper)(({ theme }) => ({
   boxShadow: "none",
 }));
 
-const GameList = () => {
+const GameList = ({ children, searchText }) => {
   const { games, isLoading, error } = useTypedSelector((state) => state.game);
   const { inView, observe } = useInView();
   const [limit, setLimit] = useState(0);
+  useGetGamesQuery({ limit: limit, search: searchText });
   useEffect(() => {
     if (inView) {
       setLimit(limit + 9);
     }
   }, [inView]);
-  useGetGamesQuery(limit);
+
+  useEffect(() => {
+    setLimit(0);
+  }, [searchText]);
+
   return (
-    <>
+    <Box sx={{ width: "90%" }}>
+      {children}
       {error ? (
         <Typography variant={"h4"} align={"center"}>
           {error}
@@ -64,7 +70,7 @@ const GameList = () => {
           </Box>
         </Box>
       )}
-    </>
+    </Box>
   );
 };
 

@@ -20,9 +20,17 @@ export const gameSlice = createSlice({
     addGames: (state) => {
       state.isLoading = true;
     },
+    addNewGames: (state) => {
+      state.isLoading = true;
+      state.games = [];
+    },
     addGamesSuccess: (state, action: PayloadAction<IGame[]>) => {
       state.isLoading = false;
       state.games.push(...action.payload);
+    },
+    setGamesSuccess: (state, action: PayloadAction<IGame[]>) => {
+      state.isLoading = false;
+      state.games = [...action.payload];
     },
     addGamesError: (state, action: PayloadAction<string>) => {
       state.isLoading = false;
