@@ -27,18 +27,28 @@ export const gameApi = createApi({
     }
   },
   endpoints: (build) => ({
-    getGames: build.query<IGame[], number>({
-      query: (limit) => ({
-        url: `games`,
-        method: "POST",
-        body: `fields name, cover.url, first_release_date, total_rating, total_rating_count, genres, videos.video_id; limit 9; offset ${limit}; where cover != null & total_rating != null & genres != null & videos != null;`,
-        mode: "cors",
-      }),
-      async onQueryStarted(limit, { dispatch, queryFulfilled }) {
-        dispatch(gameSlice.actions.addGames());
+    getGames: build.query<IGame[], { limit: number; search: string }>({
+      query: (args) => {
+        const { limit, search } = args;
+        return {
+          url: `games`,
+          method: "POST",
+          body: `fields name, cover.url, first_release_date, total_rating, total_rating_count, genres, videos.video_id; limit 9; offset ${limit}; where cover != null & total_rating != null & genres != null & videos != null; ${
+            search ? `search "${search}";` : " "
+          }`,
+          mode: "cors",
+        };
+      },
+      keepUnusedDataFor: 0,
+      async onQueryStarted({ limit }, { dispatch, queryFulfilled }) {
+        limit === 0
+          ? dispatch(gameSlice.actions.addNewGames())
+          : dispatch(gameSlice.actions.addGames());
         try {
           const { data } = await queryFulfilled;
-          dispatch(gameSlice.actions.addGamesSuccess(data));
+          limit === 0
+            ? dispatch(gameSlice.actions.setGamesSuccess(data))
+            : dispatch(gameSlice.actions.addGamesSuccess(data));
         } catch (err) {
           dispatch(
             gameSlice.actions.addGamesError(
