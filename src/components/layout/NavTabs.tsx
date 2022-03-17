@@ -22,7 +22,7 @@ export default function NavTabs() {
       <Tabs value={currentRoot}>
         <LinkTab label="Home" href="/" value={"/"} />
         <LinkTab label="Games" href="/games" value={"/games"} />
-        <LinkTab label="About" href="/about" value={"/about"} />
+        <LinkTab label="Music" href="/music" value={"/music"} />
       </Tabs>
     </Box>
   );

@@ -3,8 +3,8 @@ import { useTypedSelector } from "../../hooks/useTypedSelector";
 import useInView from "react-cool-inview";
 import { useGetGamesQuery } from "../../store/games/game.api";
 import { Box, Grid, Paper, styled, Typography } from "../../../mui";
-import { Circle } from "better-react-spinkit";
 import GameCard from "./GameCard";
+import { MetroSpinner } from "react-spinners-kit";
 
 const GridItem = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -66,7 +66,7 @@ const GameList = ({ children, searchText }) => {
             sx={{ height: "100px", alignSelf: "center", justifySelf: "center" }}
             ref={observe}
           >
-            {isLoading ? <Circle size={100} color={"#1976d2"} /> : null}
+            {isLoading ? <MetroSpinner size={100} color={"#1976d2"} /> : null}
           </Box>
         </Box>
       )}
