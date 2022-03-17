@@ -6,7 +6,7 @@ import { HYDRATE } from "next-redux-wrapper";
 export const gameApi = createApi({
   reducerPath: "api/games",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.BASE_URL}}/api`,
+    baseUrl: `${process.env.BASE_URL}/api`,
     prepareHeaders: (headers, { getState }) => {
       headers.set("Content-Type", "text/plain");
       headers.set("Accept", "application/json");
