@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IGame, IGameInfo } from "./game.types";
-import { AppDispatch } from "../store";
 import { gameSlice } from "./game.slice";
+import { HYDRATE } from "next-redux-wrapper";
 
 export const gameApi = createApi({
   reducerPath: "api/games",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api",
+    baseUrl: `${process.env.BASE_URL}}/api`,
     prepareHeaders: (headers, { getState }) => {
       headers.set("Content-Type", "text/plain");
       headers.set("Accept", "application/json");
@@ -21,19 +21,34 @@ export const gameApi = createApi({
     mode: "cors",
     credentials: "include",
   }),
+  extractRehydrationInfo(action, { reducerPath }) {
+    if (action.type === HYDRATE) {
+      return action.payload[reducerPath];
+    }
+  },
   endpoints: (build) => ({
-    getGames: build.query<IGame[], number>({
-      query: (limit) => ({
-        url: `games`,
-        method: "POST",
-        body: `fields name, cover.url, first_release_date, total_rating, total_rating_count; limit 9; offset ${limit}; where cover != null & total_rating != null;`,
-        mode: "cors",
-      }),
-      async onQueryStarted(limit, { dispatch, queryFulfilled }) {
-        dispatch(gameSlice.actions.addGames());
+    getGames: build.query<IGame[], { limit: number; search: string }>({
+      query: (args) => {
+        const { limit, search } = args;
+        return {
+          url: `games`,
+          method: "POST",
+          body: `fields name, cover.url, first_release_date, total_rating, total_rating_count, genres, videos.video_id; limit 9; offset ${limit}; where cover != null & total_rating != null & genres != null & videos != null; ${
+            search ? `search "${search}";` : " "
+          }`,
+          mode: "cors",
+        };
+      },
+      keepUnusedDataFor: 0,
+      async onQueryStarted({ limit }, { dispatch, queryFulfilled }) {
+        limit === 0
+          ? dispatch(gameSlice.actions.addNewGames())
+          : dispatch(gameSlice.actions.addGames());
         try {
           const { data } = await queryFulfilled;
-          dispatch(gameSlice.actions.addGamesSuccess(data));
+          limit === 0
+            ? dispatch(gameSlice.actions.setGamesSuccess(data))
+            : dispatch(gameSlice.actions.addGamesSuccess(data));
         } catch (err) {
           dispatch(
             gameSlice.actions.addGamesError(
@@ -43,11 +58,11 @@ export const gameApi = createApi({
         }
       },
     }),
-    getGameInfo: build.query<IGameInfo, void>({
-      query: () => ({
+    getGameInfo: build.query<IGameInfo, number>({
+      query: (gameId) => ({
         url: `games`,
         method: "POST",
-        body: "fields name, cover.url, first_release_date, genres.name, screenshots.url, summary; limit 20; where cover != null & total_rating != null;",
+        body: `fields name, cover.url, first_release_date, genres.name, screenshots.url, summary, videos.video_id; where id=${gameId};`,
         mode: "cors",
       }),
     }),

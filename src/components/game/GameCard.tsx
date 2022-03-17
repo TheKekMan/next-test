@@ -1,14 +1,12 @@
 import Link from "next/link";
 import React from "react";
 import {
-  Button,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
   Typography,
-} from "../../mui";
+} from "../../../mui";
 
 export default function GameCard(postId, name, url) {
   return (
@@ -18,7 +16,7 @@ export default function GameCard(postId, name, url) {
           maxWidth: 345,
         }}
       >
-        <Link href={`/game/[id]`} as={`/game/${postId}`} passHref>
+        <Link href={`/games/[id]`} as={`/games/${postId}`} passHref>
           <CardActionArea>
             <CardMedia
               component="img"

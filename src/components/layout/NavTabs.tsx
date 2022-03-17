@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { Box, Tab, Tabs } from "../../mui";
+import { Box, Tab, Tabs } from "../../../mui";
 import { useRouter } from "next/router";
 
 function LinkTab(props) {
@@ -13,17 +13,16 @@ function LinkTab(props) {
 
 export default function NavTabs() {
   const router = useRouter();
-  const [value, setValue] = React.useState(router.pathname);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  // @ts-ignore
+  const [[, currentRoot]] = router.pathname.matchAll(/^(\/[^/]*)/g);
+
   return (
     <Box sx={{ width: "100%" }}>
-      <Tabs value={value} onChange={handleChange}>
+      <Tabs value={currentRoot}>
         <LinkTab label="Home" href="/" value={"/"} />
         <LinkTab label="Games" href="/games" value={"/games"} />
-        <LinkTab label="About" href="/about" value={"/about"} />
+        <LinkTab label="Music" href="/music" value={"/music"} />
       </Tabs>
     </Box>
   );
