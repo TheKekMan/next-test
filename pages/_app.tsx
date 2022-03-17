@@ -5,6 +5,16 @@ import "nprogress/nprogress.css";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { Provider } from "react-redux";
 import { setupStore } from "../src/store/store";
+const { default: AbortController } = require("abort-controller");
+const { default: fetch, Headers, Request, Response } = require("node-fetch");
+
+Object.assign(globalThis, {
+  fetch,
+  Headers,
+  Request,
+  Response,
+  AbortController,
+});
 
 Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());

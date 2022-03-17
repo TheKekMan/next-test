@@ -13,6 +13,7 @@
     "@mui/material": "^5.2.8",
     "@reduxjs/toolkit": "^1.8.0",
     "@types/react-redux": "^7.1.22",
+    "abort-controller": "^3.0.0",
     "chart.js": "^3.7.1",
     "chartjs-plugin-gradient": "^0.2.1",
     "lodash": "^4.17.21",
