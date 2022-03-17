@@ -1,4 +1,7 @@
 module.exports = {
+  optimization: {
+    minimize: false,
+  },
   async rewrites() {
     return [
       {
