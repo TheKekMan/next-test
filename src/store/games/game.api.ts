@@ -58,8 +58,8 @@ export const gameApi = createApi({
         }
       },
     }),
-    getGameInfo: build.query<IGameInfo, number>({
-      query: (gameId) => ({
+    getGameInfo: build.query<IGameInfo, string>({
+      query: (gameId: string) => ({
         url: `games`,
         method: "POST",
         body: `fields name, cover.url, first_release_date, genres.name, screenshots.url, summary, videos.video_id; where id=${gameId};`,

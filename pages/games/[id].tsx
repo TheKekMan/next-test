@@ -3,22 +3,27 @@ import Head from "next/head";
 import { IGameInfo } from "../../src/store/games/game.types";
 import GameInfo from "../../src/components/game/GameInfo";
 import { store } from "../_app";
-import { gameApi } from "../../src/store/games/game.api";
+import { gameApi, useGetGameInfoQuery } from "../../src/store/games/game.api";
 import { useRouter } from "next/router";
+import { skipToken } from "@reduxjs/toolkit/query";
 
-export default function Game({ res }) {
-  const { isFallback } = useRouter();
-  if (isFallback) {
+export default function Game() {
+  const router = useRouter();
+  const result = useGetGameInfoQuery(
+    typeof router.query.id === "string" ? router.query.id : skipToken,
+    { skip: router.isFallback }
+  );
+
+  const { isLoading, data } = result;
+  if (router.isFallback || isLoading) {
     return <h1>Loading...</h1>;
   }
-
-  const game: IGameInfo = res;
   return (
     <MainLayout>
       <Head>
-        <title> {game.name}</title>
+        <title> {data[0].name}</title>
       </Head>
-      <GameInfo props={game} />
+      <GameInfo props={data[0]} />
     </MainLayout>
   );
 }
@@ -29,15 +34,8 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   store.dispatch(gameApi.endpoints.getGameInfo.initiate(params.id));
-  const res = await Promise.all(
-    gameApi.util.getRunningOperationPromises()
-  ).then((results: Array<any>) => {
-    let gameInfo = results[0].data;
-    if (gameInfo) {
-      return gameInfo[0];
-    } else return { notFound: true };
-  });
+  await Promise.all(gameApi.util.getRunningOperationPromises());
   return {
-    props: { res },
+    props: {},
   };
 }
