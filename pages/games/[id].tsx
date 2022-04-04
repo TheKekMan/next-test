@@ -37,5 +37,6 @@ export async function getStaticProps({ params }) {
   });
   return {
     props: { res },
+    revalidate: 1,
   };
 }
