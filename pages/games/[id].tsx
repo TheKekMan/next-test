@@ -7,13 +7,9 @@ import { gameApi } from "../../src/store/games/game.api";
 import { useRouter } from "next/router";
 
 export default function Game({ res }) {
-  const router = useRouter();
-  if (router.isFallback) {
+  const { isFallback } = useRouter();
+  if (isFallback) {
     return <h1>Loading...</h1>;
-  }
-
-  if (!res) {
-    return <h1>Game not found</h1>;
   }
 
   const game: IGameInfo = res;
@@ -28,7 +24,7 @@ export default function Game({ res }) {
 }
 
 export async function getStaticPaths() {
-  return { paths: [{ params: { id: "50270" } }], fallback: "blocking" };
+  return { paths: [], fallback: true };
 }
 
 export async function getStaticProps({ params }) {
@@ -39,10 +35,9 @@ export async function getStaticProps({ params }) {
     let gameInfo = results[0].data;
     if (gameInfo) {
       return gameInfo[0];
-    } else return null;
+    } else return { notFound: true };
   });
   return {
     props: { res },
-    revalidate: 10,
   };
 }
