@@ -25,11 +25,15 @@ const GameInfo = ({ props }) => {
         }}
       >
         <Typography variant={"h3"}>{game.name}</Typography>
-        <MediaCarousel screenshots={game.screenshots} videos={game.videos} />
+        {game.screenshots && game.videos ? (
+          <MediaCarousel screenshots={game.screenshots} videos={game.videos} />
+        ) : null}
         <Stack direction="row" spacing={2}>
-          {game.genres.map((genre) => (
-            <Item key={genre.id}>{genre.name}</Item>
-          ))}
+          {game.genres
+            ? game.genres.map((genre) => (
+                <Item key={genre.id}>{genre.name}</Item>
+              ))
+            : null}
         </Stack>
         <Typography variant={"h5"}>{game.summary}</Typography>
       </Box>

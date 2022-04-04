@@ -12,6 +12,10 @@ export default function Game({ res }) {
     return <h1>Loading...</h1>;
   }
 
+  if (!res) {
+    return <h1>Game not found</h1>;
+  }
+
   const game: IGameInfo = res;
   return (
     <MainLayout>
@@ -24,7 +28,7 @@ export default function Game({ res }) {
 }
 
 export async function getStaticPaths() {
-  return { paths: [], fallback: true };
+  return { paths: [{ params: { id: "50270" } }], fallback: true };
 }
 
 export async function getStaticProps({ params }) {
@@ -33,7 +37,9 @@ export async function getStaticProps({ params }) {
     gameApi.util.getRunningOperationPromises()
   ).then((results: Array<any>) => {
     let gameInfo = results[0].data;
-    return gameInfo[0];
+    if (gameInfo) {
+      return gameInfo[0];
+    } else return null;
   });
   return {
     props: { res },

@@ -7,13 +7,13 @@ export interface IGame {
 
 export interface IGameInfo {
   id: number;
-  cover: ICover;
-  first_release_date: number;
-  genres: IGenre[];
+  cover: ICover | undefined;
+  first_release_date: number | undefined;
+  genres: IGenre[] | undefined;
   name: string;
-  screenshots: IScreenshot[];
+  screenshots: IScreenshot[] | undefined;
   summary: string;
-  videos: IVideo[];
+  videos: IVideo[] | undefined;
 }
 
 export interface ICover {
