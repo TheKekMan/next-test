@@ -4,8 +4,14 @@ import { IGameInfo } from "../../src/store/games/game.types";
 import GameInfo from "../../src/components/game/GameInfo";
 import { store } from "../_app";
 import { gameApi } from "../../src/store/games/game.api";
+import { useRouter } from "next/router";
 
 export default function Game({ res }) {
+  const router = useRouter();
+  if (router.isFallback) {
+    return <h1>Loading...</h1>;
+  }
+
   const game: IGameInfo = res;
   return (
     <MainLayout>
@@ -17,8 +23,12 @@ export default function Game({ res }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  store.dispatch(gameApi.endpoints.getGameInfo.initiate(context.query.id));
+export async function getStaticPaths() {
+  return { paths: [], fallback: true };
+}
+
+export async function getStaticProps({ params }) {
+  store.dispatch(gameApi.endpoints.getGameInfo.initiate(params.id));
   const res = await Promise.all(
     gameApi.util.getRunningOperationPromises()
   ).then((results: Array<any>) => {
