@@ -28,7 +28,7 @@ export default function Game({ res }) {
 }
 
 export async function getStaticPaths() {
-  return { paths: [{ params: { id: "50270" } }], fallback: true };
+  return { paths: [{ params: { id: "50270" } }], fallback: "blocking" };
 }
 
 export async function getStaticProps({ params }) {
@@ -43,6 +43,6 @@ export async function getStaticProps({ params }) {
   });
   return {
     props: { res },
-    revalidate: 1,
+    revalidate: 10,
   };
 }
